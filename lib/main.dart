@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
           themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
           debugShowCheckedModeBanner: false,
           home: const Scaffold(
-            body: Center(child: Text('Hola Mundo..')),
+            body: Center(child: Text('Hola Mundo...')),
           ),
         ),
       ),
