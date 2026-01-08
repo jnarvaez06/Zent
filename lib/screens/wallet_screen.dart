@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:personal_finance/blocs/income_expense/income_expense_bloc.dart';
-import 'package:personal_finance/blocs/income_expense/income_expense_state.dart';
+import 'package:personal_finances/blocs/income_expense/income_expense_bloc.dart';
+import 'package:personal_finances/blocs/income_expense/income_expense_state.dart';
 import '../widgets/balance_card.dart';
-import '../widgets/transaction_list.dart';
+// import '../widgets/transaction_list.dart';
 
 class WalletScreen extends StatelessWidget {
   const WalletScreen({super.key});
@@ -25,36 +25,36 @@ class WalletScreen extends StatelessWidget {
             // Tarjeta de Balance
             BlocBuilder<IncomeExpenseBloc, IncomeExpenseState>(
               builder: (context, state) {
-                if (state is TransactionLoading) {
-                  return const BalanceCard(
-                    title: 'Available Balance',
-                    amount: '\$0',
-                    subtitle: 'See details',
-                  );
-                } else if (state is TransactionLoaded) {
-                  final balance = state.transactions.fold<double>(
-                      0,
-                      (sum, transaction) =>
-                          transaction.type == 'income' ? sum + transaction.amount : sum - transaction.amount);
+                // if (state is TransactionLoading) {
+                //   return const BalanceCard(
+                //     title: 'Available Balance',
+                //     amount: '\$0',
+                //     subtitle: 'See details',
+                //   );
+                // } else if (state is TransactionLoaded) {
+                //   final balance = state.transactions.fold<double>(
+                //       0,
+                //       (sum, transaction) =>
+                //           transaction.type == 'income' ? sum + transaction.amount : sum - transaction.amount);
 
-                  return BalanceCard(
-                    title: 'Available Balance',
-                    amount: '\$${balance.toString()}',
-                    subtitle: 'See details',
-                  );
-                } else if (state is TransactionError) {
+                //   return BalanceCard(
+                //     title: 'Available Balance',
+                //     amount: '\$${balance.toString()}',
+                //     subtitle: 'See details',
+                //   );
+                // } else if (state is TransactionError) {
+                //   return const BalanceCard(
+                //     title: 'Available Balance',
+                //     amount: '\$0',
+                //     subtitle: 'See details',
+                //   );
+                // } else {
                   return const BalanceCard(
                     title: 'Available Balance',
                     amount: '\$0',
                     subtitle: 'See details',
                   );
-                } else {
-                  return const BalanceCard(
-                    title: 'Available Balance',
-                    amount: '\$0',
-                    subtitle: 'See details',
-                  );
-                }
+                // }
               },
             ),
             const SizedBox(height: 16),
@@ -68,15 +68,15 @@ class WalletScreen extends StatelessWidget {
             Expanded(
               child: BlocBuilder<IncomeExpenseBloc, IncomeExpenseState>(
                 builder: (context, state) {
-                  if (state is TransactionLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is TransactionLoaded) {
-                    return TransactionList(transactions: state.transactions);
-                  } else if (state is TransactionError) {
-                    return Center(child: Text(state.message));
-                  } else {
+                  // if (state is TransactionLoading) {
+                  //   return const Center(child: CircularProgressIndicator());
+                  // } else if (state is TransactionLoaded) {
+                  //   return TransactionList(transactions: state.transactions);
+                  // } else if (state is TransactionError) {
+                  //   return Center(child: Text(state.message));
+                  // } else {
                     return const Center(child: Text('No transactions found.'));
-                  }
+                  // }
                 },
               ),
             ),

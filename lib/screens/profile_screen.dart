@@ -2,9 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:personal_finance/blocs/auth/auth_bloc.dart';
-import 'package:personal_finance/blocs/auth/auth_event.dart';
-import 'package:personal_finance/widgets/profile_option.dart';
+import 'package:personal_finances/blocs/auth/auth_bloc.dart';
+import 'package:personal_finances/blocs/auth/auth_event.dart';
+import 'package:personal_finances/widgets/profile_option.dart';
 import '../widgets/profile_card.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -51,7 +51,7 @@ class ProfileScreen extends StatelessWidget {
                     onTap: () async {
                       final confimed = await _showLogoutConfirmationDialog(context);
                       if (confimed == true) {
-                        context.read<AuthBloc>().add(AuthLogouRequested());
+                        context.read<AuthBloc>().add(AuthLogoutRequested());
                         context.go('/login');
                       }
                     },

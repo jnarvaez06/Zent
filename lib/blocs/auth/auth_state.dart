@@ -23,7 +23,7 @@ class AuthState {
     );
   }
 
-  AuthState copyWhit({
+  AuthState copyWith({
     String? email,
     String? password,
     bool? isSubmitting,

@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:personal_finances/app_router.dart';
 import 'package:personal_finances/app_theme.dart';
 import 'package:personal_finances/blocs/auth/auth_bloc.dart';
 import 'package:personal_finances/firebase_options.dart';
@@ -26,15 +27,17 @@ class MyApp extends StatelessWidget {
       create: (context) => AuthRepository(),
       child: BlocProvider<AuthBloc>(
         create: (context) => AuthBloc(authRepository: RepositoryProvider.of<AuthRepository>(context)),
-        child: MaterialApp(
-          title: 'Flutter Demo',
-          theme: AppTheme.greenFinanceTheme,
-          darkTheme: AppTheme.greenFinanceDarkTheme,
-          themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
-          debugShowCheckedModeBanner: false,
-          home: const Scaffold(
-            body: Center(child: Text('Hola Mundo...')),
-          ),
+        child: Builder(
+          builder: (context) {
+            return MaterialApp.router(
+              title: 'Flutter Demo',
+              theme: AppTheme.greenFinanceTheme,
+              darkTheme: AppTheme.greenFinanceDarkTheme,
+              themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+              debugShowCheckedModeBanner: false,
+              routerConfig: AppRouter.router,
+            );
+          },
         ),
       ),
     );

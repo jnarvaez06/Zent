@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:personal_finances/blocs/auth/auth_bloc.dart';
+import 'package:personal_finances/blocs/auth/auth_event.dart';
 import 'package:personal_finances/blocs/auth/auth_state.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -12,7 +13,7 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Iniciar Sesion'),
+        title: const Center(child: Text('Iniciar Sesion', style: TextStyle(color: Colors.white))),
       ),
       body: BlocListener<AuthBloc, AuthState>(listener: (context, state) {
         if (state.isSubmitting) {
@@ -20,6 +21,9 @@ class LoginScreen extends StatelessWidget {
         } else if (state.isAuthenticated) {
           Navigator.of(context).pop();
           context.go('/dashboard');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Bienvenido!'))
+          );
         } else if (state.errorMessage != null) {
           Navigator.of(context).pop();
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.errorMessage!),) );
@@ -47,8 +51,6 @@ class _LoginFormState extends State<LoginForm> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -60,11 +62,19 @@ class _LoginFormState extends State<LoginForm> {
           SizedBox(height: 16,),
           PasswordField(controller: _passwordController),
           SizedBox(height: 24,),
-          ElevatedButton(onPressed: () => {}, child: Text("Inicial Sesión"))
+          ElevatedButton(
+            onPressed: () {
+              if (_formKey.currentState?.validate() == true) {
+                context.read<AuthBloc>().add(AuthLoginRequested());
+              }
+            },
+            child: Text("Iniciar Sesión", style: TextStyle(color: Colors.white)),
+          )
         ],
       ),
     );
   }
+
 }
 
 class EmailField extends StatelessWidget {
@@ -76,6 +86,7 @@ class EmailField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
+      onChanged: (value) => context.read<AuthBloc>().add(AuthEmailChanged(value)),
       decoration: const InputDecoration(
         labelText: 'Correo',
         prefixIcon: Icon(Icons.email)
@@ -95,6 +106,7 @@ class PasswordField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
+      onChanged: (value) => context.read<AuthBloc>().add(AuthPasswordChanged(value)),
       decoration: const InputDecoration(
         labelText: 'Contraseña',
         prefixIcon: Icon(Icons.lock)

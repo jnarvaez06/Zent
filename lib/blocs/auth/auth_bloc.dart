@@ -8,27 +8,31 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   AuthBloc({required this.authRepository}) : super(AuthState.initial()) {
     on<AuthEmailChanged>((event, emit) {
-      emit(state.copyWhit(email: event.email));
+      emit(state.copyWith(email: event.email));
     });
 
     on<AuthPasswordChanged>((event, emit) {
-      emit(state.copyWhit(password: event.password));
+      emit(state.copyWith(password: event.password));
     });
 
     on<AuthLoginRequested>((event, emit) async {
-      emit(state.copyWhit(isSubmitting: true, errorMessage: null));
+      emit(state.copyWith(isSubmitting: true, errorMessage: null));
       try {
         await authRepository.signInWithEmailAndPassword(state.email, state.password);
 
-        emit(state.copyWhit(isSubmitting: false, isAuthenticated: true));
+        emit(state.copyWith(isSubmitting: false, isAuthenticated: true));
       } catch (e) {
-        emit(state.copyWhit(isSubmitting: false, errorMessage: e.toString()));
+        emit(state.copyWith(isSubmitting: false, errorMessage: e.toString()));
       }
     });
 
     on<AuthLogoutRequested>((event, emit) async {
-      await authRepository.signOut();
-      emit(state.copyWhit(isSubmitting: false, isAuthenticated: false));
+      try {
+        await authRepository.signOut();
+        emit(state.copyWith(isSubmitting: false, isAuthenticated: false));        
+      } catch (e) {
+        emit(state.copyWith(isSubmitting: false, isAuthenticated: false, errorMessage: e.toString()));
+      }
     });
   }
 }
