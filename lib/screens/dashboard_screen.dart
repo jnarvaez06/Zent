@@ -18,7 +18,41 @@ class DashboardScreen extends StatelessWidget {
         backgroundColor: theme.colorScheme.primary,
         centerTitle: true,
       ),
-      body: _buildBody(context, 1800, 2000, 100, 500),
+      body : BlocBuilder<IncomeExpenseBloc, IncomeExpenseState>(
+        builder: (context, state) {
+          if (state is TransactionLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is TransactionLoaded) {
+            final totalIncome = state.transactions
+                .where((transaction) => transaction.type == 'income')
+                .fold<double>(
+                  0, (sum, transaction) => sum + transaction.amount,
+                );
+
+            final totalExpense = state.transactions
+                .where((transaction) => transaction.type == 'expense')
+                .fold<double>(
+                  0, (sum, transaction) => sum + transaction.amount,
+                );
+
+            final availableBalance = totalIncome - totalExpense;
+
+            final budgetForMonth = totalIncome * 0.7;
+
+            return _buildBody(context, availableBalance, budgetForMonth, totalIncome, totalExpense);
+
+          } else if (state is TransactionError) {
+
+            return Center(child: Text('Error loading data: ${state.message}'));
+
+          } else {
+
+            return const Center(child: Text('No data available'));
+
+          }
+
+        }
+      )
     );
   }
 

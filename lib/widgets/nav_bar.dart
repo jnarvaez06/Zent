@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:personal_finances/app_theme.dart';
-// import 'package:personal_finances/blocs/income_expense/income_expense_bloc.dart';
-// import 'package:personal_finances/blocs/income_expense/income_expense_event.dart';
-// import 'package:personal_finances/models/income_expense_model.dart';
+import 'package:personal_finances/models/income_expense_model.dart';
+import 'package:personal_finances/blocs/income_expense/income_expense_bloc.dart';
+import 'package:personal_finances/blocs/income_expense/income_expense_event.dart';
 
 class NavBar extends StatelessWidget {
   final int currentIndex;
@@ -106,7 +106,7 @@ class NavBar extends StatelessWidget {
                                   'income',
                                 );
                               },
-                              child: const Text('Add Income'),
+                              child: const Text('Add Income', style: TextStyle(color: Colors.white70),),
                             ),
                             ElevatedButton(
                               onPressed: () {
@@ -117,7 +117,7 @@ class NavBar extends StatelessWidget {
                                   'expense',
                                 );
                               },
-                              child: const Text('Add Expense'),
+                              child: const Text('Add Expense', style: TextStyle(color: Colors.white70)),
                             ),
                           ],
                         ),
@@ -142,14 +142,14 @@ class NavBar extends StatelessWidget {
       return;
     }
 
-    // final transaction = IncomeExpense(
-    //   amount: parsedAmount.toInt(),
-    //   description: description.isEmpty ? 'no description' : description,
-    //   date: DateTime.now(),
-    //   type: type,
-    // );
+    final transaction = IncomeExpenseModel(
+      amount: parsedAmount,
+      description: description.isEmpty ? 'no description' : description,
+      date: DateTime.now(),
+      type: type,
+    );
 
-    // context.read<IncomeExpenseBloc>().add(AddTransaction(transaction));
+    context.read<IncomeExpenseBloc>().add(AddTransaction(transaction));
 
     Navigator.of(context).pop();
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Transaction added successfully')));

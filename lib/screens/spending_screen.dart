@@ -26,20 +26,20 @@ class SpendingScreen extends StatelessWidget {
             Expanded(
                 flex: 2,
                 child: BlocBuilder<IncomeExpenseBloc, IncomeExpenseState>(builder: (context, state) {
-                  // if (state is TransactionLoading) {
-                  //   return const Center(child: CircularProgressIndicator());
-                  // } else if (state is TransactionLoaded) {
-                  //   final monthlyData = _calculateMonthlyData(state.transactions);
-                  //   return LineChartWidget(monthlyData: monthlyData);
-                  // } else if (state is TransactionError) {
-                  //   return Center(
-                  //     child: Text(state.message),
-                  //   );
-                  // } else {
+                  if (state is TransactionLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is TransactionLoaded) {
+                    final monthlyData = _calculateMonthlyData(state.transactions);
+                    return LineChartWidget(monthlyData: monthlyData);
+                  } else if (state is TransactionError) {
+                    return Center(
+                      child: Text(state.message),
+                    );
+                  } else {
                     return const Center(
                       child: Text('No transactions found'),
                     );
-                  // }
+                  }
                 })),
             const SizedBox(height: 16),
             const BudgetCard(

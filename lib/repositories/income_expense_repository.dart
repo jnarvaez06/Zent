@@ -13,7 +13,7 @@ class IncomeExpenseRepository {
       return querySnapShot.docs.map((doc) {
         return IncomeExpenseModel(
           id : doc.id,
-          amount : doc["amount"],
+          amount : doc["amount"].toDouble(),
           date : (doc["date"] as Timestamp).toDate(),
           description : doc["description"],
           type: doc["type"]
@@ -22,5 +22,27 @@ class IncomeExpenseRepository {
     } catch (e) {
       throw Exception("Error fetching transaction: $e");
     }
+  }
+
+  Future<void> addTransaction(IncomeExpenseModel transaction) async {
+    try {
+      await _firestore.collection('transactions').add(
+        {
+          "amount" : transaction.amount,
+          "description" : transaction.description,
+          "date" : transaction.date,
+          "type" : transaction.type
+        }
+      );
+    } catch (e) {
+      throw Exception('Error adding transactions : $e');
+    }
+  }
+
+  Future<void> deleteTrasaction(String docId) async {
+    await FirebaseFirestore.instance
+      .collection('transactions')
+      .doc(docId)
+      .delete();
   }
 }
