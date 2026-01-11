@@ -28,16 +28,7 @@ class LineChartWidget extends StatelessWidget {
         titlesData: FlTitlesData(
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 40,
-              getTitlesWidget: (value, meta) {
-                return Text(
-                  '\$${value.toInt()}',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey.shade500,
-                  ),
-                );
-              },
+              showTitles: false,
             ),
           ),
           bottomTitles: AxisTitles(
@@ -59,7 +50,7 @@ class LineChartWidget extends StatelessWidget {
           drawHorizontalLine: true,
           getDrawingHorizontalLine: (value) {
             return FlLine(
-              color: theme.primaryColorLight.withOpacity(0.3),
+              color: theme.primaryColorLight,
               strokeWidth: 1,
             );
           },
@@ -67,7 +58,7 @@ class LineChartWidget extends StatelessWidget {
         borderData: FlBorderData(
           show: true,
           border: Border.all(
-            color: theme.primaryColorLight.withOpacity(0.5),
+            color: theme.primaryColorLight,
           ),
         ),
         minX: 0,

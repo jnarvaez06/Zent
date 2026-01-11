@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:personal_finances/blocs/income_expense/income_expense_bloc.dart';
 import 'package:personal_finances/blocs/income_expense/income_expense_state.dart';
 import 'package:personal_finances/models/income_expense_model.dart';
+import 'package:personal_finances/utils/app_formatter.dart';
 
 class CategoryList extends StatelessWidget {
   const CategoryList({super.key});
@@ -35,7 +36,7 @@ class CategoryList extends StatelessWidget {
                         TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: theme.colorScheme.onPrimary),
                   ),
                   trailing: Text(
-                    '\$${total.toString()}',
+                    AppFormatter.currency(contex, total as num),
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.normal,

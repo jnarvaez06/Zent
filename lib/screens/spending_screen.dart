@@ -17,7 +17,7 @@ class SpendingScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: theme.appBarTheme.foregroundColor,
       appBar: AppBar(
-        title: const Text('My Spending'),
+        title: const Center(child: Text('My Spending', style: TextStyle(color: Colors.white),),) ,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

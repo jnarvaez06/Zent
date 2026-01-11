@@ -4,6 +4,7 @@ import 'package:personal_finances/blocs/income_expense/income_expense_bloc.dart'
 import 'package:personal_finances/blocs/income_expense/income_expense_event.dart';
 import 'package:personal_finances/blocs/income_expense/income_expense_state.dart';
 import 'package:personal_finances/models/income_expense_model.dart';
+import 'package:personal_finances/utils/app_formatter.dart';
 
 class TransactionList extends StatelessWidget {
   const TransactionList({super.key, required List<IncomeExpenseModel> transactions});
@@ -28,8 +29,8 @@ class TransactionList extends StatelessWidget {
 
               return TransactionItem(
                 title: transaction.description,
-                date: transaction.date.toLocal().toString(),
-                amount: '\$${transaction.amount.toStringAsFixed(2)}',
+                date: AppFormatter.dateTime(transaction.date),
+                amount: AppFormatter.currency(context, transaction.amount),
                 icon: transaction.type == 'income' ? Icons.add : Icons.remove,
                 onDelete: () {
                   context.read<IncomeExpenseBloc>().add(DeleteTransaction(transaction.id ?? ''));

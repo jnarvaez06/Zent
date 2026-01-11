@@ -8,7 +8,10 @@ class IncomeExpenseRepository {
 
   Future<List<IncomeExpenseModel>> fetchTransactions () async {
     try {
-      final querySnapShot = await _firestore.collection('transactions').get();
+      final querySnapShot = await _firestore
+        .collection('transactions')
+        .orderBy('date', descending: true)
+        .get();
 
       return querySnapShot.docs.map((doc) {
         return IncomeExpenseModel(

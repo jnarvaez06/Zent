@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:personal_finances/blocs/income_expense/income_expense_bloc.dart';
 import 'package:personal_finances/blocs/income_expense/income_expense_state.dart';
+import 'package:personal_finances/utils/app_formatter.dart';
 import 'package:personal_finances/widgets/budget_card.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -81,7 +82,7 @@ class DashboardScreen extends StatelessWidget {
             _buildCustomCard(
               context,
               title: "Available balance",
-              amount: "\$${availableBalance.toString()}",
+              amount: AppFormatter.currency(context, availableBalance),
               subtitle: "See details",
             ),
             const SizedBox(height: 16),
@@ -90,7 +91,7 @@ class DashboardScreen extends StatelessWidget {
             _buildCustomCard(
               context,
               title: "Budget for October",
-              amount: "\$${budget.toString()}",
+              amount: AppFormatter.currency(context, budget),
               subtitle: "Cash Available",
             ),
             const SizedBox(height: 16),
@@ -122,14 +123,14 @@ class DashboardScreen extends StatelessWidget {
                 Expanded(
                   child: BudgetCard(
                     title: "Income",
-                    amount: "\$${income.toString()}",
+                    amount: AppFormatter.currency(context, income),
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: BudgetCard(
                     title: "Expense",
-                    amount: "\$${expense.toString()}",
+                    amount: AppFormatter.currency(context, expense),
                   ),
                 ),
               ],

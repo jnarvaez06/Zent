@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:personal_finances/blocs/income_expense/income_expense_bloc.dart';
 import 'package:personal_finances/blocs/income_expense/income_expense_state.dart';
+import 'package:personal_finances/utils/app_formatter.dart';
 import '../widgets/balance_card.dart';
 import '../widgets/transaction_list.dart';
 
@@ -42,7 +43,7 @@ class WalletScreen extends StatelessWidget {
 
                   return BalanceCard(
                     title: 'Available Balance',
-                    amount: '\$${balance.toString()}',
+                    amount: AppFormatter.currency(context, balance),
                     subtitle: 'See details',
                   );
                 } else if (state is TransactionError) {
