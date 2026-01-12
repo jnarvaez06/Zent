@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthRepository {
   final FirebaseAuth _firebaseAuth;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   AuthRepository({FirebaseAuth? firebaseAuth})
     : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
@@ -21,4 +23,22 @@ class AuthRepository {
   }
 
   Stream<User?> get authState => _firebaseAuth.authStateChanges();
+
+  Future<User?> register(String username, String email, String password) async {
+    try {
+      final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+
+      await _firestore.collection('users').doc(userCredential.user!.uid).set({
+        'email': email,
+        'username':username,
+        'createdAt': FieldValue.serverTimestamp(),
+        'role': 'user',
+      });
+
+      return userCredential.user;
+      
+    } on FirebaseException catch (e) {
+      throw e.message ?? 'Register authentication Error!';
+    }
+  }
 }

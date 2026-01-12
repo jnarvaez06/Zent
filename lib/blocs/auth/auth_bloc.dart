@@ -34,5 +34,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(state.copyWith(isSubmitting: false, isAuthenticated: false, errorMessage: e.toString()));
       }
     });
+
+    on<RegisterUser>((event, emit) async {
+      emit(state.copyWith(isSubmitting: true, errorMessage: null, isRegistered: false));
+      try {
+        await authRepository.register(event.username, event.email, event.password);
+        emit(state.copyWith(username: event.username, isRegistered: true, isSubmitting: false));
+      } catch (e) {
+        emit(state.copyWith(errorMessage: e.toString(), isRegistered: false, isSubmitting: false));
+      }
+    });
   }
 }

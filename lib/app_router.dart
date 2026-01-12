@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:personal_finances/screens/dashboard_screen.dart';
 import 'package:personal_finances/screens/login_screen.dart';
 import 'package:personal_finances/screens/profile_screen.dart';
+import 'package:personal_finances/screens/register_screen.dart';
 import 'package:personal_finances/screens/spending_screen.dart';
 import 'package:personal_finances/screens/wallet_screen.dart';
 import 'package:personal_finances/widgets/nav_bar.dart';
@@ -13,6 +14,7 @@ class AppRouter {
     initialLocation: '/login',
     routes: [
       GoRoute(path: '/login', builder: (context, state) => LoginScreen(),),
+      GoRoute(path: '/register', builder: (context, state) => RegisterScreen()),
       ShellRoute(
         builder: (context, state, child) {
           final user = FirebaseAuth.instance.currentUser;

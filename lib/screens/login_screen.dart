@@ -69,6 +69,13 @@ class _LoginFormState extends State<LoginForm> {
               }
             },
             child: Text("Iniciar Sesión", style: TextStyle(color: Colors.white)),
+          ),
+          SizedBox(height: 12,),
+          ElevatedButton(
+            onPressed: (){
+              context.go('/register');
+            },
+            child: Text("Registrarse", style: TextStyle(color: Colors.white))
           )
         ],
       ),
