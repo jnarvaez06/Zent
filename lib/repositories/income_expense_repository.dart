@@ -19,7 +19,8 @@ class IncomeExpenseRepository {
           amount : doc["amount"].toDouble(),
           date : (doc["date"] as Timestamp).toDate(),
           description : doc["description"],
-          type: doc["type"]
+          type: doc["type"],
+          user: doc["user"],
         );
       }).toList();
     } catch (e) {
@@ -34,7 +35,8 @@ class IncomeExpenseRepository {
           "amount" : transaction.amount,
           "description" : transaction.description,
           "date" : transaction.date,
-          "type" : transaction.type
+          "type" : transaction.type,
+          "user" : transaction.user,
         }
       );
     } catch (e) {

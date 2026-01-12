@@ -41,4 +41,16 @@ class AuthRepository {
       throw e.message ?? 'Register authentication Error!';
     }
   }
+
+  Future<Map<String, dynamic>?> getCurrentUserData() async {
+    final user = _firebaseAuth.currentUser;
+    if (user == null) {return null;}
+
+    final doc = await _firestore
+      .collection('users')
+      .doc(user.uid)
+      .get();
+
+    return doc.data();
+  }
 }

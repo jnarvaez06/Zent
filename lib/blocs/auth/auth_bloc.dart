@@ -20,7 +20,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         await authRepository.signInWithEmailAndPassword(state.email, state.password);
 
-        emit(state.copyWith(isSubmitting: false, isAuthenticated: true));
+        final userData = await authRepository.getCurrentUserData();
+
+        emit(state.copyWith(
+          isSubmitting: false,
+          isAuthenticated: true,
+          username: userData?['username'] ?? '',
+          email: userData?['email'] ?? state.email,
+        ));
       } catch (e) {
         emit(state.copyWith(isSubmitting: false, errorMessage: e.toString()));
       }
@@ -42,6 +49,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(state.copyWith(username: event.username, isRegistered: true, isSubmitting: false));
       } catch (e) {
         emit(state.copyWith(errorMessage: e.toString(), isRegistered: false, isSubmitting: false));
+      }
+    });
+
+    on<FetchUserData>((event, emit) async {
+      try {
+        final userData = await authRepository.getCurrentUserData();
+        if (userData != null) {
+          emit(state.copyWith(
+            username: userData['username'] ?? '',
+            email: userData['email'] ?? '',
+            isAuthenticated: true,
+          ));
+        }
+      } catch (e) {
+        emit(state.copyWith(errorMessage: e.toString()));
       }
     });
   }

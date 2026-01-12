@@ -6,6 +6,7 @@ class IncomeExpenseModel {
   final String description;
   final DateTime date;
   final String type;
+  final String user;
 
   IncomeExpenseModel({
     this.id,
@@ -13,6 +14,7 @@ class IncomeExpenseModel {
     required this.description,
     required this.date,
     required this.type,
+    required this.user,
   });
 
   factory IncomeExpenseModel.fromJson(Map<String, dynamic> json, {String? id}) {
@@ -21,7 +23,8 @@ class IncomeExpenseModel {
       amount: json['amount'],
       description: json['description'],
       date: (json['date'] as Timestamp).toDate(),
-      type: json['type']
+      type: json['type'],
+      user: json['user'],
     );
   }
 
@@ -30,7 +33,8 @@ class IncomeExpenseModel {
       'amount' : amount,
       'description' : description,
       'date' : date,
-      'type' : type
+      'type' : type,
+      'user' : user,
     };
   }
 }

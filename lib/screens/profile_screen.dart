@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -13,7 +12,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final user = FirebaseAuth.instance.currentUser;
+    final authState = context.watch<AuthBloc>().state;
 
     return Scaffold(
       backgroundColor: theme.appBarTheme.foregroundColor,
@@ -25,8 +24,8 @@ class ProfileScreen extends StatelessWidget {
         child: Column(
           children: [
             ProfileCard(
-              name: '',
-              email: user?.email ?? '',
+              name: authState.username,
+              email: authState.email,
               avatarUrl: null,
             ),
             const SizedBox(height: 16),

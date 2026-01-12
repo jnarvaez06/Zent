@@ -147,6 +147,7 @@ class NavBar extends StatelessWidget {
       description: description.isEmpty ? 'no description' : description,
       date: DateTime.now(),
       type: type,
+      user: '',
     );
 
     context.read<IncomeExpenseBloc>().add(AddTransaction(transaction));

@@ -24,5 +24,6 @@ class RegisterUser extends AuthEvent {
     required this.password,
     required this.username,
   });
-
 }
+
+class FetchUserData extends AuthEvent {}
