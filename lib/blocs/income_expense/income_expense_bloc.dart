@@ -7,10 +7,11 @@ class IncomeExpenseBloc extends Bloc<IncomeExpenseEvent, IncomeExpenseState> {
   final IncomeExpenseRepository repository;
   
   IncomeExpenseBloc(this.repository) : super(TransactionLoading()) {
+
     on<LoadTransactions>((event, emit) async {
       try {
         emit(TransactionLoading());
-        final transactions = await repository.fetchTransactions();
+        final transactions = await repository.fetchTransactions(event.uId);
         emit(TransactionLoaded(transactions));
 
       } catch (e) {
@@ -22,7 +23,7 @@ class IncomeExpenseBloc extends Bloc<IncomeExpenseEvent, IncomeExpenseState> {
       try {
         await repository.addTransaction(event.transaction);
 
-        final transactions = await repository.fetchTransactions();
+        final transactions = await repository.fetchTransactions(event.transaction.user);
         emit(TransactionLoaded(transactions));
       } catch (e) {
         emit(TransactionError('Error adding transaction: $e'));
@@ -33,7 +34,7 @@ class IncomeExpenseBloc extends Bloc<IncomeExpenseEvent, IncomeExpenseState> {
       try {
         await repository.deleteTrasaction(event.id);
 
-        final transactions = await repository.fetchTransactions();
+        final transactions = await repository.fetchTransactions(event.uId);
 
         emit(TransactionLoaded(transactions));
       } catch (e) {

@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:personal_finances/app_theme.dart';
+import 'package:personal_finances/blocs/auth/auth_bloc.dart';
 import 'package:personal_finances/models/income_expense_model.dart';
 import 'package:personal_finances/blocs/income_expense/income_expense_bloc.dart';
 import 'package:personal_finances/blocs/income_expense/income_expense_event.dart';
@@ -136,6 +138,7 @@ class NavBar extends StatelessWidget {
 
   void _addTransaction(BuildContext context, String amount, String description, String type) {
     final parsedAmount = double.tryParse(amount);
+    final firebase = FirebaseAuth.instance.currentUser;
 
     if (parsedAmount == null || parsedAmount <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please enter a valid amount')));
@@ -147,7 +150,7 @@ class NavBar extends StatelessWidget {
       description: description.isEmpty ? 'no description' : description,
       date: DateTime.now(),
       type: type,
-      user: '',
+      user: firebase!.uid,
     );
 
     context.read<IncomeExpenseBloc>().add(AddTransaction(transaction));

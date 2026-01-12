@@ -6,11 +6,12 @@ class IncomeExpenseRepository {
 
   IncomeExpenseRepository({FirebaseFirestore? firestore}) : _firestore = firestore ?? FirebaseFirestore.instance;
 
-  Future<List<IncomeExpenseModel>> fetchTransactions () async {
+  Future<List<IncomeExpenseModel>> fetchTransactions (String uId) async {
     try {
       final querySnapShot = await _firestore
         .collection('transactions')
         .orderBy('date', descending: true)
+        .where('user', isEqualTo: uId)
         .get();
 
       return querySnapShot.docs.map((doc) {

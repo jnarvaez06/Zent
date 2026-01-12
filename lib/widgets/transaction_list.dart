@@ -33,7 +33,7 @@ class TransactionList extends StatelessWidget {
                 amount: AppFormatter.currency(context, transaction.amount),
                 icon: transaction.type == 'income' ? Icons.add : Icons.remove,
                 onDelete: () {
-                  context.read<IncomeExpenseBloc>().add(DeleteTransaction(transaction.id ?? ''));
+                  context.read<IncomeExpenseBloc>().add(DeleteTransaction(transaction.id ?? '', transaction.user));
                 },
               );
             },
