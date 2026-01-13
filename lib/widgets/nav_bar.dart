@@ -1,8 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:personal_finances/app_theme.dart';
-import 'package:personal_finances/blocs/auth/auth_bloc.dart';
 import 'package:personal_finances/models/income_expense_model.dart';
 import 'package:personal_finances/blocs/income_expense/income_expense_bloc.dart';
 import 'package:personal_finances/blocs/income_expense/income_expense_event.dart';
@@ -45,27 +45,15 @@ class NavBar extends StatelessWidget {
             backgroundColor: Colors.transparent,
             elevation: 0,
             items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_today),
-                label: 'Spending',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.account_balance_wallet),
-                label: 'Wallet',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: 'Profile',
-              ),
+              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+              BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: 'Spending'),
+              BottomNavigationBarItem(icon: Icon(Icons.account_balance_wallet), label: 'Wallet'),
+              BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
             ],
           ),
         ),
 
-        // Botón flotante en el centro
+        // Botón flotante
         Positioned(
           top: -30,
           left: MediaQuery.of(context).size.width / 2 - 30,
@@ -74,88 +62,167 @@ class NavBar extends StatelessWidget {
             onPressed: () {
               showModalBottomSheet(
                 context: context,
+                isScrollControlled: true, // Permite que el modal suba con el teclado
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                 ),
-                builder: (context) {
-                  final TextEditingController amountController = TextEditingController();
-                  final TextEditingController descriptionController = TextEditingController();
-
-                  return Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextField(
-                          controller: amountController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(labelText: 'Amount'),
-                        ),
-                        TextField(
-                          controller: descriptionController,
-                          decoration: const InputDecoration(labelText: 'Description (optional)'),
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                _addTransaction(
-                                  context,
-                                  amountController.text,
-                                  descriptionController.text,
-                                  'income',
-                                );
-                              },
-                              child: const Text('Add Income', style: TextStyle(color: Colors.white70),),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                _addTransaction(
-                                  context,
-                                  amountController.text,
-                                  descriptionController.text,
-                                  'expense',
-                                );
-                              },
-                              child: const Text('Add Expense', style: TextStyle(color: Colors.white70)),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                },
+                builder: (context) => const _TransactionFormModal(),
               );
             },
-            child: const Icon(Icons.add),
+            child: const Icon(Icons.add, color: Colors.white),
           ),
         ),
       ],
     );
   }
+}
 
-  void _addTransaction(BuildContext context, String amount, String description, String type) {
+// Widget interno Stateful para manejar el formulario sin perder el foco
+class _TransactionFormModal extends StatefulWidget {
+  const _TransactionFormModal();
+
+  @override
+  State<_TransactionFormModal> createState() => _TransactionFormModalState();
+}
+
+class _TransactionFormModalState extends State<_TransactionFormModal> {
+  final TextEditingController amountController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController dateController = TextEditingController();
+
+  @override
+  void dispose() {
+    amountController.dispose();
+    descriptionController.dispose();
+    dateController.dispose();
+    super.dispose();
+  }
+
+  void _addTransaction(String amount, String description, String date, String type) {
     final parsedAmount = double.tryParse(amount);
-    final firebase = FirebaseAuth.instance.currentUser;
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+
+    print(date);
+
+    List<String> dateParts = date.split('/');
+    int day = int.parse(dateParts[0]);
+    int month = int.parse(dateParts[1]);
+    int year = int.parse(dateParts[2]);
+    DateTime dateObject = DateTime(year, month, day);
 
     if (parsedAmount == null || parsedAmount <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please enter a valid amount')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a valid amount')),
+      );
       return;
     }
 
     final transaction = IncomeExpenseModel(
       amount: parsedAmount,
       description: description.isEmpty ? 'no description' : description,
-      date: DateTime.now(),
+      date: dateObject,
       type: type,
-      user: firebase!.uid,
+      user: firebaseUser!.uid,
     );
 
+    // Accedemos al Bloc y enviamos el evento
     context.read<IncomeExpenseBloc>().add(AddTransaction(transaction));
 
     Navigator.of(context).pop();
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Transaction added successfully')));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Transaction added successfully')),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'New Transaction',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: amountController,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                autofocus: true, // El foco se mantiene aquí al abrirse
+                decoration: const InputDecoration(
+                  labelText: 'Amount',
+                  prefixIcon: Icon(Icons.attach_money),
+                ),
+              ),
+              TextField(
+                controller: dateController,
+                readOnly: true, // Evita que se abra el teclado físico
+                decoration: InputDecoration(
+                  labelText: 'Date',
+                  prefixIcon: Icon(Icons.calendar_month),
+                ),
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000), // Fecha mínima
+                    lastDate: DateTime(2101), // Fecha máxima
+                  );
+
+                  if (pickedDate != null) {
+                    setState(() {
+                      dateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                    });
+                  }
+                },
+              ),
+              TextField(
+                controller: descriptionController,
+                decoration: const InputDecoration(
+                  labelText: 'Description (optional)',
+                  prefixIcon: Icon(Icons.description),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                      onPressed: () => _addTransaction(
+                        amountController.text,
+                        descriptionController.text,
+                        dateController.text,
+                        'income',
+                      ),
+                      child: const Text('Income', style: TextStyle(color: Colors.white)),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+                      onPressed: () => _addTransaction(
+                        amountController.text,
+                        descriptionController.text,
+                        dateController.text,
+                        'expense',
+                      ),
+                      child: const Text('Expense', style: TextStyle(color: Colors.white)),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
